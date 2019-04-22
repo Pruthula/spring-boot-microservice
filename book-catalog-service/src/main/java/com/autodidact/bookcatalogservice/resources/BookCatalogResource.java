@@ -30,15 +30,24 @@ public class BookCatalogResource {
 	public List<CatalogItem> getCatalog(@PathVariable("userId") String userId) {
 		
 		// Get all rated book ids
-		List<Rating> ratings = restTemplate.getForEntity("http://localhost:9092/userratings/" + userId, UserRatings.class).getBody().getRatings();
+		//List<Rating> ratings = restTemplate.getForEntity("http://localhost:9092/userratings/" + userId, UserRatings.class).getBody().getRatings();
+		
+		//Using Eureka Service Discovery : Use the application names instead of the url and port : book-ratings-service
+		List<Rating> ratings = restTemplate.getForEntity("http://book-ratings-service/userratings/" + userId, UserRatings.class).getBody().getRatings();
 		
 		// for each book id call book info service
 		List<CatalogItem> catalogItemList = new ArrayList<>();
 		for (Rating rating : ratings) {
-			ResponseEntity<Book> response = restTemplate.getForEntity("http://localhost:9091/books/" + rating.getBookId(), Book.class);
+			//ResponseEntity<Book> response = restTemplate.getForEntity("http://localhost:9091/books/" + rating.getBookId(), Book.class);
+			
+			//Using Eureka Service Discovery : Use the application names instead of the url and port : book-info-service
+			ResponseEntity<Book> response = restTemplate.getForEntity("http://book-info-service/books/" + rating.getBookId(), Book.class);
 			System.out.println(response.getBody());
 			
-			Book book = restTemplate.getForObject("http://localhost:9091/books/" + rating.getBookId(), Book.class);
+			//Book book = restTemplate.getForObject("http://localhost:9091/books/" + rating.getBookId(), Book.class);
+			
+			//Using Eureka Service Discovery : Use the application names instead of the url and port : book-info-service
+			Book book = restTemplate.getForObject("http://book-info-service/books/" + rating.getBookId(), Book.class);
 			
 			/*Book book = webClientBuilder.build()
 							.get().uri("http://localhost:9091/books/" + rating.getBookId())

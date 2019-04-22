@@ -13,8 +13,21 @@ repositories {
 	mavenCentral()
 }
 
+ext {
+	set('springCloudVersion', 'Greenwich.SR1')
+}
+
 dependencies {
+    //Instructs that this micro service uses service discovery
+	compile('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
+	
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	compile group: 'org.projectlombok', name: 'lombok', version: '1.18.6'
+}
+
+dependencyManagement {
+	imports {
+		mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Finchley.SR2'
+	}
 }
